@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Chat Titling Demo</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+    <body>
+        <h1>Chat Titling Demo</h1>
+        <p>
+            Current chatbot applications send an extra request to name the chat with the user. This
+            creates millions of redundant requests that slow UX, inflate compute costs, and add
+            operational complexity for a purely cosmetic feature. A lightweight approach using
+            classical ML techniques (tokenize prompt+reply, remove stop-words, score term frequency,
+            select top-k, and preserve original order) generates equally coherent titles without any
+            additional inference. This approach is deterministic, microsecond-fast, near-zero cost,
+            and scales cleanly—delivering the same user-visible outcome while dramatically improving
+            efficiency and spend.
+        </p>
+
+        <br /><br />
+
+        <div class="step">Input</div>
+        <textarea name="input" id="input" placeholder="Input chat conversation">
+User:
+Define positive societal contribution in relation to full stack developers
+
+ChatGPT said:
+
+Alright, let’s crack this open properly.
+
+What “Positive Societal Contribution” Means (in General)
+
+At its core, a positive societal contribution is when your work doesn’t just make money or look clever — it tangibly improves people’s lives, strengthens communities, or solves real problems in a way that leaves the world a little better than before. It’s a mix of ethics, accessibility, sustainability, and human benefit.
+
+Now, let’s aim this definition through the lens of a full stack developer.
+
+Positive Societal Contribution for Full Stack Developers
+
+As a full stack dev, you wield terrifying power: you can build things that touch millions of lives. That means your contribution to society isn’t just about writing neat code — it’s about what that code does for humans.
+
+Here are the key dimensions:
+
+1. Accessibility & Inclusion
+
+Building apps and websites that are usable by everyone: people with disabilities, people on low-bandwidth connections, people who don’t speak English.
+
+Implementing standards like WCAG (web accessibility guidelines) isn’t just compliance — it’s social equity.
+
+Example: Designing a school portal that actually works for blind students using screen readers.
+
+2. Ethical Technology
+
+Avoiding “dark patterns” (trickery that manipulates users).
+
+Respecting user data, privacy, and security.
+
+Example: Building a community platform that doesn’t secretly sell data to advertisers but instead protects vulnerable users.
+
+3. Sustainability
+
+Writing efficient code and infrastructure that minimizes server load and energy consumption.
+
+Example: Optimizing backend queries so a site doesn’t waste massive cloud resources, reducing the carbon footprint of each user action.
+
+4. Education & Empowerment
+
+Open-sourcing tools, libraries, or frameworks that others can learn from and build on.
+
+Creating apps that help people learn new skills or gain access to opportunities.
+
+Example: A platform that connects underrepresented groups to scholarships or remote job opportunities.
+
+5. Community Impact
+
+Volunteering dev skills for nonprofits, community orgs, or grassroots movements.
+
+Example: Building a donation platform for disaster relief that channels funds transparently, cutting out exploitative middlemen.
+
+6. Resilience & Safety
+
+Designing systems that are secure, resilient against misuse, and that protect users in high-risk environments (e.g., journalists, activists).
+
+Example: Messaging apps with strong encryption that safeguard human rights defenders.
+
+The TL;DR Definition
+
+For a full stack developer, positive societal contribution means:
+
+Building software systems that are inclusive, ethical, sustainable, and empower people — with conscious design choices that prioritize human well-being over profit or convenience.
+
+It’s not just what you code, but why and how.
+
+Want me to also sketch out a bad societal contribution list (the anti-example side) so you can burn into memory what not to do as a developer?
+    </textarea
+        >
+
+        <button id="submit">Generate</button>
+        <button id="clear">Clear Input</button>
+
+        <!-- prettier-ignore -->
+        <svg class="separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+
+        <div class="step">Normalised / Processed Text</div>
+        <textarea disabled id="r1" placeholder="Normalised / Processed Text"></textarea>
+
+        <!-- prettier-ignore -->
+        <svg class="separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+
+        <div class="step">Term Frequency (TF)</div>
+        <textarea disabled id="r2" placeholder="Term Frequency (TF)"></textarea>
+
+        <!-- prettier-ignore -->
+        <svg class="separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+
+        <div class="step">Top k TFs (Descending)</div>
+        <textarea disabled id="r3" placeholder="Top k TFs (Descending)"></textarea>
+
+        <!-- prettier-ignore -->
+        <svg class="separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+
+        <div class="step">Positional Ordering (preserve original word positions) - Ascending</div>
+        <textarea
+            disabled
+            id="r4"
+            placeholder="Positional Ordering (preserve original word positions) - Ascending"
+        ></textarea>
+
+        <!-- prettier-ignore -->
+        <svg class="separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+
+        <fieldset>
+            <legend>Output</legend>
+            <h3 id="result">Output</h3>
+        </fieldset>
+
+        <br />
+        <p id="processing-time"></p>
+
+        <br /><br />
+
+        <h2>Considerations</h2>
+        <ul>
+            <li>Manual input of stop-words</li>
+            <li>Does not account for word variations (e.g., run, running, ran)</li>
+            <li>Zero understanding of meaning</li>
+            <li>Can't tell if “cell” means “biology cell” or “prison cell.”</li>
+            <li>Requires decent amount of text to work well</li>
+        </ul>
+
+        <br /><br />
+        <footer>
+            <p>
+                © 2025 Cohen Coombs. This work is licensed under
+                <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>.
+            </p>
+        </footer>
+
+        <script src="TFChat.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>
